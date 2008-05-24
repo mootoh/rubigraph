@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/rubigraph
+lib/rubigraph.rb
+test/test_rubigraph.rb
