@@ -7,7 +7,7 @@ require 'pp'
 # first, call Rubigraph.init
 #
 module Rubigraph
-  VERSION = '0.1'
+  VERSION = '0.0.1'
 
   class Vertex
     attr_reader :id

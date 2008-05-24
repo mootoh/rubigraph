@@ -1,32 +1,42 @@
 = rubigraph
 
-* FIX (url)
+http://rubyforge.org/projects/rubigraph/
 
 == DESCRIPTION:
 
-FIX (describe your package)
+a Ruby wrap for Ubigraph (http://www.ubietylab.net/ubigraph/).
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+It provides a shortcut to plot, draw a graph (over calling XML-RPC).
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+require 'rubigraph'
+Rubigraph.init
+
+v1  = Vertex.new
+v2  = Vertex.new
+e12 = Edge.new(v1, v2)
+
+v1.color  = '#003366'
+v2.shape  = 'sphere'
+e12.label = 'edge between 1 and 2'
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+Ubigraph (http://www.ubietylab.net/ubigraph/),
+tested under rev1450, rev1554
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+sudo gem install
 
 == LICENSE:
 
-(The MIT License)
+The MIT License
 
-Copyright (c) 2008 FIX
+Copyright (c) 2008 mootoh
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
