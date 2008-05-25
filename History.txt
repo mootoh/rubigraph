@@ -1,6 +1,6 @@
 === 0.0.1 / 2008-05-25
 
-* 1 major enhancement
+* initial release
 
   * Birthday!
 

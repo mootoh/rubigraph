@@ -1,31 +1,34 @@
-= rubigraph
+= Rubigraph
 
-http://rubyforge.org/projects/rubigraph/
+http://rubyforge.org/projects/rubigraph
 
 == DESCRIPTION:
 
-a Ruby wrap for Ubigraph (http://www.ubietylab.net/ubigraph/).
+a Ruby wrap for Ubigraph (http://www.ubietylab.net/ubigraph).
+
+see http://www.ubietylab.net/ubigraph/content/Docs/index.html to get complete description about API.
 
 == FEATURES/PROBLEMS:
 
-It provides a shortcut to plot, draw a graph (over calling XML-RPC).
+It provides a shortcut to plot, draw a graph (by calling XML-RPC internally).
 
 == SYNOPSIS:
+Make sure Ubigraph serverr is started before using this library.
 
-require 'rubigraph'
-Rubigraph.init
+  require 'rubigraph'
+  Rubigraph.init
 
-v1  = Vertex.new
-v2  = Vertex.new
-e12 = Edge.new(v1, v2)
+  v1  = Vertex.new
+  v2  = Vertex.new
+  e12 = Edge.new(v1, v2)
 
-v1.color  = '#003366'
-v2.shape  = 'sphere'
-e12.label = 'edge between 1 and 2'
+  v1.color  = '#003366'
+  v2.shape  = 'sphere'
+  e12.label = 'edge between 1 and 2'
 
 == REQUIREMENTS:
 
-Ubigraph (http://www.ubietylab.net/ubigraph/),
+Ubigraph (http://www.ubietylab.net/ubigraph),
 tested under rev1450, rev1554
 
 == INSTALL:

@@ -4,7 +4,7 @@ require 'pp'
 #
 # Ruby wrapper for Ubigraph.
 #
-# first, call Rubigraph.init
+# Call Rubigraph.init at first.
 #
 module Rubigraph
   VERSION = '0.0.1'
@@ -82,7 +82,10 @@ module Rubigraph
     end
   end # Vertex
 
+  # Edge between Vertexes
   class Edge
+    # create an Edge.
+    # from, to should be Vertex.
     def initialize(from, to, id = nil)
       if id
         @id = Rubigraph.server.call('ubigraph.new_edge_w_id', id, from.id, to.id)
@@ -165,14 +168,17 @@ module Rubigraph
   end # Edge
 
 
+  # initialize XML-RPC client
   def self.init(host='127.0.0.1', port='20738')
     @server = XMLRPC::Client.new2("http://#{host}:#{port}/RPC2")
   end
 
+  # clear all vertex, edges
   def self.clear
     @server.call('ubigraph.clear')
   end
 
+  # for internal use.
   def self.server
     @server
   end
