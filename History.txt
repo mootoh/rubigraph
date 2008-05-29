@@ -1,3 +1,9 @@
+=== 0.1.0 / 2008-05-29
+
+* 2nd release
+
+  * works with UbiGraph-alpha-0.2.2-r1680.
+
 === 0.0.1 / 2008-05-25
 
 * initial release

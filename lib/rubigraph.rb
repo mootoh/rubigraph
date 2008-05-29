@@ -7,7 +7,7 @@ require 'pp'
 # Call Rubigraph.init at first.
 #
 module Rubigraph
-  VERSION = '0.0.1'
+  VERSION = '0.1.0'
 
   class Vertex
     attr_reader :id
@@ -26,16 +26,12 @@ module Rubigraph
     end
 
     def set_attribute(att, value)
-      if -1 == Rubigraph.server.call('ubigraph.set_vertex_attribute', @id, att, value.to_s)
-        raise "Rubigraph::Vertex##{att}=: cannot change #{att} #{@id}"
-      end
+      Rubigraph.server.call('ubigraph.set_vertex_attribute', @id, att, value.to_s)
     end
 
     def set_attributes(attrs)
       attrs.each do |k, v|
-        if -1 == Rubigraph.server.call('ubigraph.set_vertex_attribute', @id, k, v.to_s)
-          raise "Rubigraph::Vertex##{k}=: cannot change #{v} #{@id}"
-        end
+        Rubigraph.server.call('ubigraph.set_vertex_attribute', @id, k, v.to_s)
       end
     end
 
@@ -102,16 +98,12 @@ module Rubigraph
     end
 
     def set_attribute(att, value)
-      if -1 == Rubigraph.server.call('ubigraph.set_edge_attribute', @id, att, value.to_s)
-        raise "Rubigraph::edge##{att}=: cannot change #{att} #{@id}"
-      end
+      Rubigraph.server.call('ubigraph.set_edge_attribute', @id, att, value.to_s)
     end
 
     def set_attributes(attrs)
       attrs.each do |k, v|
-        if -1 == Rubigraph.server.call('ubigraph.set_edge_attribute', @id, k, v.to_s)
-          raise "Rubigraph::edge##{k}=: cannot change #{v} #{@id}"
-        end
+        Rubigraph.server.call('ubigraph.set_edge_attribute', @id, k, v.to_s)
       end
     end
 
