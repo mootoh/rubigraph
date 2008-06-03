@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
   s.name = %q{rubigraph}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.specification_version = 2 if s.respond_to? :specification_version=
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["mootoh"]
-  s.date = %q{2008-05-29}
+  s.date = %q{2008-06-04}
   s.description = %q{a Ruby wrap for Ubigraph (http://www.ubietylab.net/ubigraph).  see http://www.ubietylab.net/ubigraph/content/Docs/index.html to get complete description about API.}
   s.email = %q{mootoh@gmail.com}
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.txt"]
