@@ -13,7 +13,7 @@ module Rubigraph
   class Vertex
     attr_reader :id
 
-    def initialize(id = object_id % (1 << 32) - (1 << 31))
+    def initialize(id = Rubigraph.genid)
       @id = id
       Rubigraph.call('ubigraph.new_vertex_w_id', id)
     end
@@ -79,7 +79,7 @@ module Rubigraph
   class Edge
     # create an Edge.
     # from, to should be Vertex.
-    def initialize(from, to, id = object_id % (1 << 32) - (1 << 31))
+    def initialize(from, to, id = Rubigraph.genid)
       @id = id
       Rubigraph.call('ubigraph.new_edge_w_id', id, from.id, to.id)
     end
@@ -156,10 +156,11 @@ module Rubigraph
     @server = XMLRPC::Client.new2("http://#{host}:#{port}/RPC2")
     @mutex  = Mutex.new
     @pool   = Array.new
-    @syncer = Thread.start(ttl) do |ttl|
+    @num    = -1 * (1 << 31) - 1 # XMLPRC i4's minimum
+    @flusher = Thread.start(ttl) do |ttl|
       while true do
         sleep ttl
-        sync!
+        flush!
       end
     end
   end
@@ -167,20 +168,27 @@ module Rubigraph
   # clear all vertex, edges
   def self.clear
     call('ubigraph.clear')
-    sync!
+    flush!
   end
 
-  def self.sync!
+  def self.flush!
     @mutex.synchronize {
       @server.multicall(*@pool)
       @pool.clear
     }
   end
 
+  def self.genid
+    @mutex.synchronize {
+      @num += 1
+    }
+    @num
+  end
+
   def self.call(*argv)
     @mutex.synchronize {
-      @pool.push([argv])
+      @pool.push argv
     }
-    sync! if @pool.size >= 128
+    flush! if @pool.size >= 128
   end
 end # Rubigraph
