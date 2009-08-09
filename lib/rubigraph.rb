@@ -13,17 +13,13 @@ module Rubigraph
   class Vertex
     attr_reader :id
 
-    def initialize(id = nil)
-      @id = id ?
-        Rubigraph.call('ubigraph.new_vertex_w_id', id) :
-        Rubigraph.call('ubigraph.new_vertex')
-      raise 'Rubigraph::Vertex.initialize: cannot create vertex' if @id == -1
+    def initialize(id = object_id % (1 << 32) - (1 << 31))
+      @id = id
+      Rubigraph.call('ubigraph.new_vertex_w_id', id)
     end
 
     def remove
-      if -1 == Rubigraph.call('ubigraph.remove_vertex', @id)
-        raise "Rubigraph::Vertex#remove: cannot remove vertex #{@id}"
-      end
+      Rubigraph.call('ubigraph.remove_vertex', @id)
     end
 
     def set_attribute(att, value)
@@ -83,17 +79,13 @@ module Rubigraph
   class Edge
     # create an Edge.
     # from, to should be Vertex.
-    def initialize(from, to, id = nil)
-      @id = id ?
-        Rubigraph.call('ubigraph.new_edge_w_id', id, from.id, to.id) :
-        Rubigraph.call('ubigraph.new_edge', from.id, to.id)
-      raise 'Rubigraph::Edge.initialize: cannot create edge' if @id == -1
+    def initialize(from, to, id = object_id % (1 << 32) - (1 << 31))
+      @id = id
+      Rubigraph.call('ubigraph.new_edge_w_id', id, from.id, to.id)
     end
 
     def remove
-      if -1 == Rubigraph.call('ubigraph.remove_edge', @id)
-        raise "Rubigraph::Edge#remove: cannot remove edge #{@id}"
-      end
+      Rubigraph.call('ubigraph.remove_edge', @id)
     end
 
     def set_attribute(att, value)
