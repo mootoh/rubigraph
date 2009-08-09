@@ -160,30 +160,35 @@ module Rubigraph
 
 
   # initialize XML-RPC client
-  def self.init(host='127.0.0.1', port='20738')
+  def self.init(host='127.0.0.1', port='20738',ttl=1)
     @server = XMLRPC::Client.new2("http://#{host}:#{port}/RPC2")
     @mutex  = Mutex.new
+    @pool   = Array.new
+    @syncer = Thread.start(ttl) do |ttl|
+      while true do
+        sleep ttl
+        sync!
+      end
+    end
   end
 
   # clear all vertex, edges
   def self.clear
     call('ubigraph.clear')
+    sync!
   end
 
-  def self.call(msg, *args)
+  def self.sync!
     @mutex.synchronize {
-      case args.size
-      when 0
-        @server.call(msg)
-      when 1
-        @server.call(msg, args[0])
-      when 2
-        @server.call(msg, args[0], args[1])
-      when 3
-        @server.call(msg, args[0], args[1], args[2])
-      else
-        raise
-      end
+      @server.multicall(*@pool)
+      @pool.clear
     }
+  end
+
+  def self.call(*argv)
+    @mutex.synchronize {
+      @pool.push([argv])
+    }
+    sync! if @pool.size >= 128
   end
 end # Rubigraph
