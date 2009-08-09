@@ -163,6 +163,7 @@ module Rubigraph
         flush!
       end
     end
+    at_exit { flush! }
   end
 
   # clear all vertex, edges
@@ -189,6 +190,6 @@ module Rubigraph
     @mutex.synchronize {
       @pool.push argv
     }
-    flush! if @pool.size >= 128
+    flush! if @pool.size >= 256
   end
 end # Rubigraph
