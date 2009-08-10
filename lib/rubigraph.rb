@@ -13,17 +13,13 @@ module Rubigraph
   class Vertex
     attr_reader :id
 
-    def initialize(id = nil)
-      @id = id ?
-        Rubigraph.call('ubigraph.new_vertex_w_id', id) :
-        Rubigraph.call('ubigraph.new_vertex')
-      raise 'Rubigraph::Vertex.initialize: cannot create vertex' if @id == -1
+    def initialize(id = Rubigraph.genid)
+      @id = id
+      Rubigraph.call('ubigraph.new_vertex_w_id', id)
     end
 
     def remove
-      if -1 == Rubigraph.call('ubigraph.remove_vertex', @id)
-        raise "Rubigraph::Vertex#remove: cannot remove vertex #{@id}"
-      end
+      Rubigraph.call('ubigraph.remove_vertex', @id)
     end
 
     def set_attribute(att, value)
@@ -83,17 +79,13 @@ module Rubigraph
   class Edge
     # create an Edge.
     # from, to should be Vertex.
-    def initialize(from, to, id = nil)
-      @id = id ?
-        Rubigraph.call('ubigraph.new_edge_w_id', id, from.id, to.id) :
-        Rubigraph.call('ubigraph.new_edge', from.id, to.id)
-      raise 'Rubigraph::Edge.initialize: cannot create edge' if @id == -1
+    def initialize(from, to, id = Rubigraph.genid)
+      @id = id
+      Rubigraph.call('ubigraph.new_edge_w_id', id, from.id, to.id)
     end
 
     def remove
-      if -1 == Rubigraph.call('ubigraph.remove_edge', @id)
-        raise "Rubigraph::Edge#remove: cannot remove edge #{@id}"
-      end
+      Rubigraph.call('ubigraph.remove_edge', @id)
     end
 
     def set_attribute(att, value)
@@ -160,30 +152,44 @@ module Rubigraph
 
 
   # initialize XML-RPC client
-  def self.init(host='127.0.0.1', port='20738')
+  def self.init(host='127.0.0.1', port='20738',ttl=1)
     @server = XMLRPC::Client.new2("http://#{host}:#{port}/RPC2")
     @mutex  = Mutex.new
+    @pool   = Array.new
+    @num    = -1 * (1 << 31) - 1 # XMLPRC i4's minimum
+    @flusher = Thread.start(ttl) do |ttl|
+      while true do
+        sleep ttl
+        flush!
+      end
+    end
+    at_exit { flush! }
   end
 
   # clear all vertex, edges
   def self.clear
     call('ubigraph.clear')
+    flush!
   end
 
-  def self.call(msg, *args)
+  def self.flush!
     @mutex.synchronize {
-      case args.size
-      when 0
-        @server.call(msg)
-      when 1
-        @server.call(msg, args[0])
-      when 2
-        @server.call(msg, args[0], args[1])
-      when 3
-        @server.call(msg, args[0], args[1], args[2])
-      else
-        raise
-      end
+      @server.multicall(*@pool)
+      @pool.clear
     }
+  end
+
+  def self.genid
+    @mutex.synchronize {
+      @num += 1
+    }
+    @num
+  end
+
+  def self.call(*argv)
+    @mutex.synchronize {
+      @pool.push argv
+    }
+    flush! if @pool.size >= 256
   end
 end # Rubigraph
